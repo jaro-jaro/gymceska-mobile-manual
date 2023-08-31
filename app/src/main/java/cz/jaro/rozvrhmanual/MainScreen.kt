@@ -4,9 +4,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.jaro.rozvrhmanual.rozvrh.RozvrhScreen
 import cz.jaro.rozvrhmanual.rozvrh.Vjec
@@ -22,11 +19,9 @@ fun MainSceeen(
 
     Surface {
 
-        var data by remember { mutableStateOf("") }
         if (tridy.isEmpty()) TextField(
-            value = data,
+            value = "",
             onValueChange = {
-                data = it
                 repo.data(it)
             }
         )
