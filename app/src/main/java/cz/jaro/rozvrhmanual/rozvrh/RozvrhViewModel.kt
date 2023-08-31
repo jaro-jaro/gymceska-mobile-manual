@@ -76,7 +76,7 @@ class RozvrhViewModel(
     ): Tyden = withContext(Dispatchers.IO) {
         if (vjec is Vjec.TridaVjec) return@withContext emptyList<Den>()
 
-        val seznamNazvu = tridy
+        val seznamNazvu = tridy.drop(1)
 
         val novaTabulka = MutableList(6) { MutableList(17) { mutableListOf<Bunka>() } }
 

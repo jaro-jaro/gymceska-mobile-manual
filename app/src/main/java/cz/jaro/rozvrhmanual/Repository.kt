@@ -12,7 +12,9 @@ class Repository {
 
     private val rozvrhy = MutableStateFlow(null as Map<String, Tyden>?)
 
-    val tridy = rozvrhy.filterNotNull().map { it.keys }
+    val tridy = rozvrhy.filterNotNull().map { it.keys }.map {
+        setOf(" ") + it
+    }
 
     fun rozvrh(trida: String) = rozvrhy.value!![trida]
 

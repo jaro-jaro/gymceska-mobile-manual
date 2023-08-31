@@ -100,6 +100,7 @@ fun RozvrhScreen(
             Vybiratko(
                 seznam = tridy.map { it.jmeno },
                 aktualIndex = if (vjec is Vjec.TridaVjec) tridy.indexOf(vjec) else 0,
+                nulaDisabled = true
             ) { i ->
                 if (i == 0) return@Vybiratko
                 vybratRozvrh(tridy[i])
