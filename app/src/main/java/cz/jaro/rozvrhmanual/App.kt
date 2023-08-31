@@ -1,8 +1,6 @@
-package cz.jaro.rozvrh
+package cz.jaro.rozvrhmanual
 
 import android.app.Application
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.spec.Direction
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -17,12 +15,5 @@ class App : Application() {
             androidContext(this@App)
             defaultModule()
         }
-    }
-
-    companion object {
-        val DestinationsNavigator.navigate
-            get() = { it: Direction ->
-                navigate(it)
-            }
     }
 }

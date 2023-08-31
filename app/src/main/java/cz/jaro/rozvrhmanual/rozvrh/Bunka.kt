@@ -1,4 +1,4 @@
-package cz.jaro.rozvrh.rozvrh
+package cz.jaro.rozvrhmanual.rozvrh
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

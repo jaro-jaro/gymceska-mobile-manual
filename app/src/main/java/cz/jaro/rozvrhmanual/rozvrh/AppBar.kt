@@ -1,12 +1,10 @@
-package cz.jaro.rozvrh.rozvrh
+package cz.jaro.rozvrhmanual.rozvrh
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CloudDownload
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,17 +20,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import com.ramcosta.composedestinations.spec.Direction
-import cz.jaro.rozvrh.R
-import cz.jaro.rozvrh.destinations.NastaveniScreenDestination
+import cz.jaro.rozvrhmanual.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
-    stahnoutVse: ((String) -> Unit, () -> Unit) -> Unit,
-    navigate: (Direction) -> Unit,
-    najdiMiVolnouTridu: (Stalost, Int, Int, (String) -> Unit, (List<Vjec.MistnostVjec>?) -> Unit) -> Unit,
+    najdiMiVolnouTridu: (Int, Int, (String) -> Unit, (List<Vjec.MistnostVjec>?) -> Unit) -> Unit,
 ) {
     val nacitani = stringResource(R.string.nacitani)
     var nacitame by remember { mutableStateOf(false) }
@@ -56,32 +50,9 @@ fun AppBar(
             Text(text = stringResource(R.string.rozvrh))
         },
         actions = {
-            IconButton(
-                onClick = {
-                    nacitame = true
-                    stahnoutVse({
-                        podrobnostiNacitani = it
-                    }) {
-                        nacitame = false
-                        podrobnostiNacitani = nacitani
-                    }
-                }
-            ) {
-                Icon(Icons.Default.CloudDownload, stringResource(R.string.stahnout_vsechny_rozvrhy))
-            }
-
-            IconButton(
-                onClick = {
-                    navigate(NastaveniScreenDestination)
-                }
-            ) {
-                Icon(Icons.Default.Settings, stringResource(R.string.nastaveni))
-            }
-
             var volnaTridaNastaveniDialog by remember { mutableStateOf(false) }
             var volnaTridaDialog by remember { mutableStateOf(false) }
             var volneTridy by remember { mutableStateOf(emptyList<Vjec.MistnostVjec>()) }
-            var stalost by remember { mutableStateOf(Stalost.TentoTyden) }
             var denIndex by remember { mutableIntStateOf(0) }
             var hodinaIndex by remember { mutableIntStateOf(0) }
 
@@ -105,7 +76,7 @@ fun AppBar(
                 text = {
                     LazyColumn {
                         item {
-                            Text("Na škole jsou ${stalost.kdy} ${Seznamy.dny6Pad[denIndex]} ${Seznamy.hodiny4Pad[hodinaIndex]} volné tyto učebny:")
+                            Text("Na škole jsou ${Seznamy.dny6Pad[denIndex]} ${Seznamy.hodiny4Pad[hodinaIndex]} volné tyto učebny:")
                         }
                         items(volneTridy.toList()) {
                             Text("${it.jmeno}, to je${it.napoveda}")
@@ -125,8 +96,7 @@ fun AppBar(
                             volnaTridaNastaveniDialog = false
                             podrobnostiNacitani = "Hledám volnou třídu"
 
-                            najdiMiVolnouTridu(
-                                stalost, denIndex, hodinaIndex,
+                            najdiMiVolnouTridu(denIndex, hodinaIndex,
                                 {
                                     podrobnostiNacitani = it
                                 },
@@ -159,12 +129,6 @@ fun AppBar(
                 },
                 text = {
                     Column {
-                        Vybiratko(
-                            seznam = Stalost.values().toList(),
-                            value = stalost,
-                        ) {
-                            stalost = it
-                        }
                         Vybiratko(
                             seznam = Seznamy.dny1Pad,
                             aktualIndex = denIndex,

@@ -1,22 +1,18 @@
 @file:Suppress("UnstableApiUsage")
-
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.gms.google.services)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.firebase.crashlytics)
 }
 
 
 android {
-    namespace = "cz.jaro.rozvrh"
+    namespace = "cz.jaro.rozvrhmanual"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "cz.jaro.rozvrh"
+        applicationId = "cz.jaro.rozvrhmanual"
         minSdk = 26
         targetSdk = 34
         versionCode = 10
@@ -76,20 +72,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.androidx.navigation)
     implementation(libs.bundles.androidx.jetpack.compose)
-    implementation(libs.bundles.androidx.jetpack.glance)
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.crashlytics.ktx)
-    implementation(libs.firebase.database.ktx)
-    implementation(libs.firebase.config.ktx)
-    implementation(libs.jsoup)
-    implementation(libs.androidx.datastore.preferences)
     implementation(libs.bundles.koin)
-    testImplementation(libs.junit.jupiter)
     ksp(libs.koin.ksp.compiler)
-    implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
     implementation(libs.compose.material3.datetime.pickers)
-    implementation(libs.semver)
 
     testImplementation(libs.json)
 }

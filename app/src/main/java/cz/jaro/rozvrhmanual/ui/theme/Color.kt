@@ -1,4 +1,4 @@
-package cz.jaro.rozvrh.ui.theme
+package cz.jaro.rozvrhmanual.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

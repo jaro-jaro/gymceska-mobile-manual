@@ -1,5 +1,6 @@
-package cz.jaro.rozvrh.rozvrh
+package cz.jaro.rozvrhmanual.rozvrh
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
@@ -13,26 +14,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.PeopleAlt
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,51 +36,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.spec.Direction
-import cz.jaro.rozvrh.App.Companion.navigate
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-@Destination
-@RootNavGraph(start = true)
 @Composable
 fun RozvrhScreen(
-    vjec: Vjec? = null,
-    stalost: Stalost? = null,
-    navigator: DestinationsNavigator,
+    tridy: List<Vjec.TridaVjec>
 ) {
     val viewModel = koinViewModel<RozvrhViewModel> {
-        parametersOf(RozvrhViewModel.Parameters(vjec, stalost, navigator.navigate))
+        parametersOf(RozvrhViewModel.Parameters(tridy))
+    }
+
+    BackHandler {
+        viewModel.reset()
     }
 
     val tabulka by viewModel.tabulka.collectAsStateWithLifecycle()
     val realVjec by viewModel.vjec.collectAsStateWithLifecycle()
 
-    val tridy by viewModel.tridy.collectAsStateWithLifecycle()
-    val mistnosti by viewModel.mistnosti.collectAsStateWithLifecycle()
-    val vyucujici by viewModel.vyucujici.collectAsStateWithLifecycle()
-    val mujRozvrh by viewModel.mujRozvrh.collectAsStateWithLifecycle()
-    val zobrazitMujRozvrh by viewModel.zobrazitMujRozvrh.collectAsStateWithLifecycle()
-
     RozvrhScreen(
-        tabulka = tabulka?.first,
+        tabulka = tabulka,
         vjec = realVjec,
-        stalost = viewModel.stalost,
         vybratRozvrh = viewModel::vybratRozvrh,
-        zmenitStalost = viewModel::zmenitStalost,
-        stahnoutVse = viewModel.stahnoutVse,
-        navigate = navigator.navigate,
         najdiMiVolnouTridu = viewModel::najdiMivolnouTridu,
-        rozvrhOfflineWarning = tabulka?.second,
         tridy = tridy,
-        mistnosti = mistnosti,
-        vyucujici = vyucujici,
-        mujRozvrh = mujRozvrh,
-        zmenitMujRozvrh = viewModel::zmenitMujRozvrh,
-        zobrazitMujRozvrh = zobrazitMujRozvrh,
+        mistnosti = viewModel.mistnosti,
+        vyucujici = viewModel.vyucujici,
     )
 }
 
@@ -94,29 +69,19 @@ fun RozvrhScreen(
 fun RozvrhScreen(
     tabulka: Tyden?,
     vjec: Vjec?,
-    stalost: Stalost,
     vybratRozvrh: (Vjec) -> Unit,
-    zmenitStalost: (Stalost) -> Unit,
-    stahnoutVse: ((String) -> Unit, () -> Unit) -> Unit,
-    navigate: (Direction) -> Unit,
-    najdiMiVolnouTridu: (Stalost, Int, Int, (String) -> Unit, (List<Vjec.MistnostVjec>?) -> Unit) -> Unit,
-    rozvrhOfflineWarning: String?,
+    najdiMiVolnouTridu: (Int, Int, (String) -> Unit, (List<Vjec.MistnostVjec>?) -> Unit) -> Unit,
     tridy: List<Vjec.TridaVjec>,
     mistnosti: List<Vjec.MistnostVjec>,
     vyucujici: List<Vjec.VyucujiciVjec>,
-    mujRozvrh: Boolean,
-    zmenitMujRozvrh: () -> Unit,
-    zobrazitMujRozvrh: Boolean,
 ) = Scaffold(
     topBar = {
         AppBar(
-            stahnoutVse = stahnoutVse,
-            navigate = navigate,
             najdiMiVolnouTridu = najdiMiVolnouTridu,
         )
     }
 ) { paddingValues ->
-    if (vjec == null || tridy.size <= 1) LinearProgressIndicator(
+    if (vjec == null || tridy.isEmpty()) LinearProgressIndicator(
         Modifier
             .padding(paddingValues)
             .fillMaxWidth()
@@ -135,27 +100,11 @@ fun RozvrhScreen(
             Vybiratko(
                 seznam = tridy.map { it.jmeno },
                 aktualIndex = if (vjec is Vjec.TridaVjec) tridy.indexOf(vjec) else 0,
-                nulaDisabled = true,
             ) { i ->
                 if (i == 0) return@Vybiratko
                 vybratRozvrh(tridy[i])
             }
-            if (zobrazitMujRozvrh) IconButton(
-                onClick = zmenitMujRozvrh
-            ) {
-                Icon(if (mujRozvrh) Icons.Default.PeopleAlt else Icons.Default.Person, null)
-            }
-
-            Spacer(modifier = Modifier.weight(1F))
-
-            Vybiratko(
-                seznam = Stalost.values().toList(),
-                value = stalost
-            ) { novaStalost ->
-                zmenitStalost(novaStalost)
-            }
         }
-        var napoveda by remember { mutableStateOf(false) }
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -169,13 +118,6 @@ fun RozvrhScreen(
                 if (i == 0) return@Vybiratko
                 vybratRozvrh(mistnosti[i])
             }
-            IconButton(
-                onClick = {
-                    napoveda = true
-                }
-            ) {
-                Icon(Icons.Default.Help, null)
-            }
 
             Spacer(modifier = Modifier.weight(1F))
 
@@ -188,30 +130,6 @@ fun RozvrhScreen(
                 vybratRozvrh(vyucujici[i])
             }
         }
-        if (napoveda) AlertDialog(
-            onDismissRequest = {
-                napoveda = false
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        napoveda = false
-                    }
-                ) {
-                    Text("OK")
-                }
-            },
-            title = {
-                Text("Nápověda k místnostím")
-            },
-            text = {
-                LazyColumn {
-                    items(mistnosti.drop(1)) {
-                        Text("${it.jmeno} - to je${it.napoveda}")
-                    }
-                }
-            }
-        )
 
         if (tabulka == null) LinearProgressIndicator(Modifier.fillMaxWidth())
         else Tabulka(
@@ -219,7 +137,6 @@ fun RozvrhScreen(
             kliklNaNeco = { vjec ->
                 vybratRozvrh(vjec)
             },
-            rozvrhOfflineWarning = rozvrhOfflineWarning,
             tridy = tridy,
             mistnosti = mistnosti,
             vyucujici = vyucujici,
@@ -232,18 +149,10 @@ context(ColumnScope)
 private fun Tabulka(
     tabulka: Tyden,
     kliklNaNeco: (vjec: Vjec) -> Unit,
-    rozvrhOfflineWarning: String?,
     tridy: List<Vjec.TridaVjec>,
     mistnosti: List<Vjec.MistnostVjec>,
     vyucujici: List<Vjec.VyucujiciVjec>,
 ) {
-    Text(
-        rozvrhOfflineWarning?.plus(" Pro aktualizaci dat klikněte Stáhnout vše.") ?: "Prohlížíte si aktuální rozvrh.",
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    )
-
     if (tabulka.isEmpty()) return
 
     val horScrollState = rememberScrollState()
@@ -374,21 +283,6 @@ private fun Tabulka(
         }
     }
 }
-
-@Composable
-fun Vybiratko(
-    seznam: List<Stalost>,
-    value: Stalost,
-    modifier: Modifier = Modifier,
-    poklik: (vjec: Stalost) -> Unit,
-) = Vybiratko(
-    seznam = seznam.map { it.nazev },
-    aktualIndex = seznam.indexOf(value).takeIf { it != -1 } ?: 0,
-    modifier,
-    poklik = {
-        poklik(seznam[it])
-    },
-)
 
 @Composable
 fun Vybiratko(

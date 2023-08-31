@@ -1,4 +1,4 @@
-package cz.jaro.rozvrh.rozvrh
+package cz.jaro.rozvrhmanual.rozvrh
 
 object Seznamy {
     val dny1Pad = listOf(
