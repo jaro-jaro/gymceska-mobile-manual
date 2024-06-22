@@ -1,8 +1,8 @@
 package cz.jaro.rozvrhmanual
 
+import cz.jaro.rozvrhmanual.rozvrh.TvorbaRozvrhu.vytvoritRozvrhPodleJinych
 import cz.jaro.rozvrhmanual.rozvrh.Tyden
 import cz.jaro.rozvrhmanual.rozvrh.Vjec
-import cz.jaro.rozvrhmanual.rozvrh.vytvoritRozvrhPodleJinych
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
