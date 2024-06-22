@@ -1,8 +1,11 @@
 package cz.jaro.rozvrhmanual
 
 import cz.jaro.rozvrhmanual.rozvrh.Tyden
+import cz.jaro.rozvrhmanual.rozvrh.Vjec
+import cz.jaro.rozvrhmanual.rozvrh.vytvoritRozvrhPodleJinych
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
@@ -38,7 +41,22 @@ class Repository {
         }
     }.distinct()
 
+    suspend fun vyucujici2() = vyucujici().filter {
+        vytvoritRozvrhPodleJinych(Vjec.VyucujiciVjec(it, it), this, tridy.first().map { Vjec.TridaVjec(it) }).all { den ->
+            den.isEmpty() || den.all { hodina ->
+                hodina.isEmpty() || hodina.all { bunka ->
+                    bunka.predmet.isBlank() || bunka.predmet.startsWith("TS")
+                }
+            }
+        }
+    }
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
+
     fun data(it: String) {
-        rozvrhy.value = Json.decodeFromString<Map<String, Tyden>>(it)
+        if (it.isBlank()) return
+        rozvrhy.value = json.decodeFromString<Map<String, Tyden>>(it)
     }
 }

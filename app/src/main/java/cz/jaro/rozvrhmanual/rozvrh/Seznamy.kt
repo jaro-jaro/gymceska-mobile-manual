@@ -8,7 +8,7 @@ object Seznamy {
         "Čtvrtek",
         "Pátek",
     )
-    val dny6Pad = listOf(
+    val dny4Pad = listOf(
         "v pondělí",
         "v úterý",
         "ve středu",
@@ -52,3 +52,20 @@ object Seznamy {
         "15. hodinu",
     )
 }
+
+val Seznamy.dny
+    get() = dny1Pad.mapIndexed { index, it ->
+        Vjec.DenVjec(
+            jmeno = it,
+            zkratka = it.take(2),
+            index = index + 1,
+        )
+    }
+val Seznamy.hodiny
+    get() = hodiny1Pad.mapIndexed { index, it ->
+        Vjec.HodinaVjec(
+            jmeno = it,
+            zkratka = it.split(".")[0],
+            index = index + 1,
+        )
+    }

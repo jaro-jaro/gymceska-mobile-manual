@@ -1,4 +1,5 @@
 @file:Suppress("UnstableApiUsage")
+
 plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
@@ -15,8 +16,8 @@ android {
         applicationId = "cz.jaro.rozvrhmanual"
         minSdk = 26
         targetSdk = 34
-        versionCode = 10
-        versionName = "2.2.0"
+        versionCode = 31
+        versionName = "2.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
