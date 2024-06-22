@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,6 +38,7 @@ fun AppBar(
     najdiMiVolnehoUcitele: (Int, List<Int>, (String) -> Unit, (List<Vjec.VyucujiciVjec>?) -> Unit) -> Unit,
     tabulka: Tyden?,
     vybratRozvrh: (Vjec) -> Unit,
+    reset: () -> Unit,
 ) {
     val nacitani = stringResource(R.string.nacitani)
     var nacitame by remember { mutableStateOf(false) }
@@ -229,6 +231,13 @@ fun AppBar(
                     dismissOnBackPress = false,
                 )
             )
+            IconButton(
+                onClick = {
+                    reset()
+                }
+            ) {
+                Icon(Icons.Default.RestartAlt, "Resetovat")
+            }
             IconButton(
                 onClick = {
                     najdiMiNastaveniDialog = true

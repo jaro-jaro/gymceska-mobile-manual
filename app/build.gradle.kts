@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "cz.jaro.rozvrhmanual"
-        minSdk = 26
+        minSdk = 33
         targetSdk = 34
         versionCode = 31
         versionName = "2.4.0"

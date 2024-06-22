@@ -1,6 +1,5 @@
 package cz.jaro.rozvrhmanual.rozvrh
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,10 +25,6 @@ fun RozvrhScreen(
         parametersOf(RozvrhViewModel.Parameters(tridy))
     }
 
-    BackHandler {
-        viewModel.reset()
-    }
-
     val tabulka by viewModel.tabulka.collectAsStateWithLifecycle()
     val realVjec by viewModel.vjec.collectAsStateWithLifecycle()
 
@@ -40,6 +35,7 @@ fun RozvrhScreen(
         najdiMiVolnouTridu = viewModel::najdiMivolnouTridu,
         najdiMiVolnehoUcitele = viewModel::najdiMiVolnehoUcitele,
         tridy = tridy,
+        reset = viewModel::reset,
         mistnosti = viewModel.mistnosti,
         vyucujici = viewModel.vyucujici,
     )
@@ -54,6 +50,7 @@ fun RozvrhScreen(
     najdiMiVolnouTridu: (Int, List<Int>, (String) -> Unit, (List<Vjec.MistnostVjec>?) -> Unit) -> Unit,
     najdiMiVolnehoUcitele: (Int, List<Int>, (String) -> Unit, (List<Vjec.VyucujiciVjec>?) -> Unit) -> Unit,
     tridy: List<Vjec.TridaVjec>,
+    reset: () -> Unit,
     mistnosti: List<Vjec.MistnostVjec>,
     vyucujici: List<Vjec.VyucujiciVjec>,
 ) = Scaffold(
@@ -63,6 +60,7 @@ fun RozvrhScreen(
             najdiMiVolnehoUcitele = najdiMiVolnehoUcitele,
             tabulka = tabulka,
             vybratRozvrh = vybratRozvrh,
+            reset = reset,
         )
     }
 ) { paddingValues ->

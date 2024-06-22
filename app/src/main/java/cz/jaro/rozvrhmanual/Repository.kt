@@ -1,19 +1,35 @@
 package cz.jaro.rozvrhmanual
 
+import android.content.ContentResolver
+import android.content.SharedPreferences
+import android.net.Uri
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import cz.jaro.rozvrhmanual.rozvrh.TvorbaRozvrhu.vytvoritRozvrhPodleJinych
 import cz.jaro.rozvrhmanual.rozvrh.Tyden
 import cz.jaro.rozvrhmanual.rozvrh.Vjec
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
+import java.nio.file.Path
+import kotlin.io.path.createTempFile
+import kotlin.io.path.outputStream
 
 @Single
-class Repository {
+class Repository(
+    private val sharedPreferences: SharedPreferences,
+    private val contentResolver: ContentResolver,
+    private val filesDir: Path,
+) {
 
     private val rozvrhy = MutableStateFlow(null as Map<String, Tyden>?)
+
+    private val _uri = MutableStateFlow(sharedPreferences.getString("uri", ""))
+    val uri = _uri.asStateFlow()
 
     val tridy = rozvrhy.filterNotNull().map { it.keys }.map {
         setOf(" ") + it
@@ -55,12 +71,30 @@ class Repository {
         ignoreUnknownKeys = true
     }
 
-    fun data(it: String) {
-        if (it.isBlank()) return
-        rozvrhy.value = json.decodeFromString<Map<String, Tyden>>(it).mapValues { (_, tyden) ->
-            tyden.map { den ->
-                den.take(10)
+    fun loadFile(uri: Uri) {
+        val tempFile = createTempFile(filesDir)
+        contentResolver.openInputStream(uri)?.use { `is` ->
+            tempFile.outputStream().use { os ->
+                `is`.transferTo(os)
             }
         }
+        setUri(tempFile.toFile().toUri().toString())
+    }
+
+    fun loadData() {
+        Uri.parse(uri.value).toFile().inputStream().use {
+            val data = it.readBytes().decodeToString()
+            if (data.isBlank()) return
+            rozvrhy.value = json.decodeFromString<Map<String, Tyden>>(data).mapValues { (_, tyden) ->
+                tyden.map { den ->
+                    den.take(10)
+                }
+            }
+        }
+    }
+
+    fun setUri(uri: String?) {
+        sharedPreferences.edit().putString("uri", uri).apply()
+        _uri.value = uri
     }
 }

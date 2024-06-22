@@ -111,6 +111,5 @@ class RozvrhViewModel(
         }
     }
 
-    fun reset() = repo.data("{}")
-
+    fun reset() = repo.setUri(null)
 }
