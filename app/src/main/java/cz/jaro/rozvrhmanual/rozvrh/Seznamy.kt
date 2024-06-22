@@ -26,12 +26,6 @@ object Seznamy {
         "7. hodina",
         "8. hodina",
         "9. hodina",
-        "10. hodina",
-        "11. hodina",
-        "12. hodina",
-        "13. hodina",
-        "14. hodina",
-        "15. hodina",
     )
     val hodiny4Pad = listOf(
         "0. hodinu",
@@ -44,12 +38,6 @@ object Seznamy {
         "7. hodinu",
         "8. hodinu",
         "9. hodinu",
-        "10. hodinu",
-        "11. hodinu",
-        "12. hodinu",
-        "13. hodinu",
-        "14. hodinu",
-        "15. hodinu",
     )
 }
 

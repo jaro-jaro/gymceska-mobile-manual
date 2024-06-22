@@ -42,10 +42,10 @@ class Repository {
     }.distinct()
 
     suspend fun vyucujici2() = vyucujici().filter {
-        vytvoritRozvrhPodleJinych(Vjec.VyucujiciVjec(it, it), this, tridy.first().map { Vjec.TridaVjec(it) }).all { den ->
+        vytvoritRozvrhPodleJinych(Vjec.VyucujiciVjec(it, it), this, tridy.first().drop(1).map { Vjec.TridaVjec(it) }).all { den ->
             den.isEmpty() || den.all { hodina ->
                 hodina.isEmpty() || hodina.all { bunka ->
-                    bunka.predmet.isBlank() || bunka.predmet.startsWith("TS")
+                    bunka.predmet.isBlank() || !bunka.predmet.startsWith("ST")
                 }
             }
         }
@@ -57,6 +57,10 @@ class Repository {
 
     fun data(it: String) {
         if (it.isBlank()) return
-        rozvrhy.value = json.decodeFromString<Map<String, Tyden>>(it)
+        rozvrhy.value = json.decodeFromString<Map<String, Tyden>>(it).mapValues { (_, tyden) ->
+            tyden.map { den ->
+                den.take(10)
+            }
+        }
     }
 }

@@ -116,7 +116,7 @@ fun AppBar(
                             Text("Na škole jsou ${Seznamy.dny4Pad[denIndex]} ${hodinaIndexy.joinToString(" a ") { "$it." }} hodinu volné tyto učebny:")
                         }
                         if (ucebna) items(volneTridy.toList()) {
-                            Text("${it.jmeno}, to je${it.napoveda}", Modifier.clickable {
+                            Text(it.jmeno, Modifier.clickable {
                                 najdiMiDialog = false
                                 vybratRozvrh(it)
                             })
