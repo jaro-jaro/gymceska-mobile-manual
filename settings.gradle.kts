@@ -2,7 +2,7 @@
 
 import java.net.URI
 
-rootProject.name = "Gymceska"
+rootProject.name = "Rozvrh Manuál"
 include(":app")
 
 pluginManagement {
