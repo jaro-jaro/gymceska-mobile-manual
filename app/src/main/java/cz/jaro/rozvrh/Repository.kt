@@ -1,13 +1,13 @@
-package cz.jaro.rozvrhmanual
+package cz.jaro.rozvrh
 
 import android.content.ContentResolver
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.core.net.toFile
 import androidx.core.net.toUri
-import cz.jaro.rozvrhmanual.rozvrh.TvorbaRozvrhu.vytvoritRozvrhPodleJinych
-import cz.jaro.rozvrhmanual.rozvrh.Tyden
-import cz.jaro.rozvrhmanual.rozvrh.Vjec
+import cz.jaro.rozvrh.rozvrh.TvorbaRozvrhu.vytvoritRozvrhPodleJinych
+import cz.jaro.rozvrh.rozvrh.Tyden
+import cz.jaro.rozvrh.rozvrh.Vjec
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterNotNull

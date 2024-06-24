@@ -1,4 +1,4 @@
-package cz.jaro.rozvrhmanual.rozvrh
+package cz.jaro.rozvrh.rozvrh
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.DialogProperties
-import cz.jaro.rozvrhmanual.R
+import cz.jaro.rozvrh.R
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration.Companion.minutes

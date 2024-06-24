@@ -1,6 +1,6 @@
-package cz.jaro.rozvrhmanual.rozvrh
+package cz.jaro.rozvrh.rozvrh
 
-import cz.jaro.rozvrhmanual.Repository
+import cz.jaro.rozvrh.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
